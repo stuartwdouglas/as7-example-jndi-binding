@@ -49,7 +49,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Dependencies>org.jboss.as.naming,org.jboss.as.server,org.jboss.msc</Dependencies>
+                            <Dependencies>org.jboss.as.naming,org.jboss.as.server,org.jboss.msc,org.jboss.modules</Dependencies>
                         </manifestEntries>
                     </archive>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
