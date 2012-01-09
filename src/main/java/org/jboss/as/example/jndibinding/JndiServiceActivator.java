@@ -23,7 +23,7 @@ package org.jboss.as.example.jndibinding;
 
 import org.jboss.as.naming.ManagedReference;
 import org.jboss.as.naming.ManagedReferenceFactory;
-import org.jboss.as.naming.NamingStore;
+import org.jboss.as.naming.ServiceBasedNamingStore;
 import org.jboss.as.naming.deployment.ContextNames;
 import org.jboss.as.naming.service.BinderService;
 import org.jboss.modules.ModuleClassLoader;
@@ -80,14 +80,14 @@ public class JndiServiceActivator implements ServiceActivator {
         final ServiceName bindingServiceName = ContextNames.GLOBAL_CONTEXT_SERVICE_NAME.append(ExampleServlet.MY_GLOBAL_BINDING_NAME);
         final BinderService binderService = new BinderService(ExampleServlet.MY_GLOBAL_BINDING_NAME);
         ServiceBuilder<ManagedReferenceFactory> builder = serviceActivatorContext.getServiceTarget().addService(bindingServiceName, binderService);
-        builder.addDependency(ContextNames.GLOBAL_CONTEXT_SERVICE_NAME, NamingStore.class, binderService.getNamingStoreInjector());
+        builder.addDependency(ContextNames.GLOBAL_CONTEXT_SERVICE_NAME, ServiceBasedNamingStore.class, binderService.getNamingStoreInjector());
         binderService.getManagedObjectInjector().inject(new StringManagedReferenceFactory("Hello World!"));
         builder.install();
 
-        final ServiceName appBindingServiceName = ContextNames.serviceNameOfContext("jndi-example", "jndi-example", "jndi-example", "java:app/" + ExampleServlet.MY_APP_BINDING_NAME);
+        final ServiceName appBindingServiceName = ContextNames.bindInfoFor("jndi-example", "jndi-example", "jndi-example", "java:app/" + ExampleServlet.MY_APP_BINDING_NAME).getBinderServiceName();
         final BinderService appBinderService = new BinderService(ExampleServlet.MY_APP_BINDING_NAME);
         builder = serviceActivatorContext.getServiceTarget().addService(appBindingServiceName, appBinderService);
-        builder.addDependency(ContextNames.contextServiceNameOfApplication(applicationName), NamingStore.class, appBinderService.getNamingStoreInjector());
+        builder.addDependency(ContextNames.contextServiceNameOfApplication(applicationName), ServiceBasedNamingStore.class, appBinderService.getNamingStoreInjector());
         appBinderService.getManagedObjectInjector().inject(new StringManagedReferenceFactory("Hello Application!"));
         builder.install();
 
